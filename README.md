@@ -177,11 +177,11 @@ Generated Text
 
 ###  Training Notebook
 
- https://colab.research.google.com/drive/1LuC_b0QEr5DirhDEraxZQhCoUM8VchyR?usp=sharing
-
+https://colab.research.google.com/drive/1GAVAzlilZEp4w0cvwrviRCPhHwOvWsY9?usp=sharing
+ 
 ### Evaluation Notebook
 
- https://colab.research.google.com/drive/1GAVAzlilZEp4w0cvwrviRCPhHwOvWsY9?usp=sharing
+https://colab.research.google.com/drive/1LuC_b0QEr5DirhDEraxZQhCoUM8VchyR?usp=sharing
 
 ---
 
