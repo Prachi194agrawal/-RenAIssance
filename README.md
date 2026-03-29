@@ -1,104 +1,72 @@
-# 📜 17th-Century Spanish OCR using Transformers + LLM Post-Processing
+# Historical Spanish Manuscript OCR using Vision-Language Model Fine-Tuning
 
-## 🚀 Overview
-This project addresses Optical Character Recognition (OCR) for **17th-century Spanish printed texts**, a challenging domain where traditional OCR systems (e.g., Tesseract) perform poorly due to:
-- Irregular typography
-- Degraded scans
-- Historical spelling variations
+<p align="center">
+  <img src="images/humanai_logo.jpg" alt="HumanAI Foundation" height="80" style="margin-right: 20px;"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/gsoc_logo.png" alt="Google Summer of Code" height="50"/>
+</p>
 
-The solution implements a **transformer-based OCR pipeline** combined with **LLM/VLM-based post-processing** to improve transcription accuracy.
+<p align="center">
+  <a href="https://summerofcode.withgoogle.com/programs/2024/projects/lg7vQeMM">
+    <img src="https://img.shields.io/badge/GSoC-2024-orange?logo=google&logoColor=white" alt="GSoC 2024"/>
+  </a>
+  <a href="https://humanai.foundation/">
+    <img src="https://img.shields.io/badge/HumanAI-Foundation-blue" alt="HumanAI"/>
+  </a>
+  <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white" alt="Python"/>
+  <img src="https://img.shields.io/badge/Model-Qwen2.5--VL--7B-green" alt="Model"/>
+  <img src="https://img.shields.io/badge/Fine--tuning-LoRA-purple" alt="LoRA"/>
+  <img src="https://img.shields.io/badge/License-MIT-lightgrey" alt="License"/>
+</p>
 
-> 📌 This work is submitted for **RenAIssance GSoC 2026 – Evaluation Test I (Printed OCR)**
-
----
-
-## 🧠 Methodology
-
-### 🔹 1. OCR Model (Transformer-Based)
-- Built a deep learning OCR pipeline using transformer-based architecture
-- Processes scanned document images to extract text
-- Focused on:
-  - Capturing **main textual content**
-  - Ignoring **marginalia and decorative elements**
-
-### 🔹 2. LLM/VLM Post-Processing (Late Stage)
-- Applied after OCR inference
-- Corrects:
-  - OCR errors (missing/incorrect characters)
-  - Word-level inconsistencies
-  - Contextual spelling using historical patterns
+<p align="center">
+  <b>CER: 0.628 → 0.485 (↓ 22.8%) &nbsp;|&nbsp; WER: 1.003 → 0.627 (↓ 37.5%)</b><br/>
+  <i>Qwen2.5-VL-7B + LoRA vs. Tesseract baseline on 17th-century Spanish manuscripts</i>
+</p>
 
 ---
 
-## 📊 Results
+## Overview
 
-### 🔸 Evaluation Metrics
-- **CER (Character Error Rate)**
-- **WER (Word Error Rate)**
+This project addresses the challenge of Optical Character Recognition (OCR) on **17th-century Spanish printed manuscripts** — a domain where conventional OCR engines such as Tesseract fail due to archaic orthography, interchangeable glyphs (`u`/`v`, `f`/long-`ſ`), macron/tilde abbreviation systems, and degraded printing quality.
 
-### 🔸 Performance Improvement
-| Metric | Baseline (Tesseract) | Proposed Pipeline | Improvement |
-|--------|----------------------|------------------|------------|
-| CER    | Higher               | Lower            | ↓ 22.8%    |
-| WER    | Higher               | Lower            | ↓ 37.5%    |
+Leveraging a hybrid multimodal approach, we fine-tune a **Vision-Language Model (VLM)** — specifically `Qwen2.5-VL-7B-Instruct` — with **Low-Rank Adaptation (LoRA)** via the Unsloth framework. The resulting pipeline accurately transcribes Early Modern Spanish text at full page granularity, outperforming Tesseract by **22.8% on CER** and **37.5% on WER** on the held-out validation set.
 
-### 🔸 Key Observations
-- LLM/VLM significantly improves OCR output quality
-- Strong robustness across different page layouts
-- Effective handling of noisy historical scans
+This project is a continuation of the **[RenAIssance project](https://humanai.foundation/)** under the HumanAI organization, developed as part of **Google Summer of Code 2024**.
+
+> **Developer:** Shashank Shekhar Singh — B.Tech, IIT BHU Varanasi, India  
+> **Blog post:** [My Journey with HumanAI in GSoC 2024 — Part 2](https://medium.com/@shashankshekharsingh1205/my-journey-with-humanai-in-the-google-summer-of-code24-program-part-2-bb42abce3495)
 
 ---
 
-## 📁 Project Structure
-├── step_1_model_training.ipynb # OCR model training pipeline
-├── step_2_model_checking.ipynb # Evaluation & benchmarking
-├── results.png # CER/WER comparison visualization
-├── dataset/ # Input data (PDFs / images)
-└── README.md
+## Table of Contents
 
-
-
-
----
-
-## 📦 Dataset
-
-- Early modern Spanish printed documents (provided dataset)
-- Ground truth transcriptions used for evaluation
-- Preprocessing steps:
-  - PDF → image conversion
-  - Region focus on main text
+- [Project Goals](#project-goals)
+- [Pipeline Overview](#pipeline-overview)
+- [Installation](#installation)
+- [Project Structure](#project-structure)
+- [About The Project](#about-the-project)
+  - [Dataset and Preprocessing](#dataset-and-preprocessing)
+  - [Data Augmentation](#data-augmentation)
+  - [Model Architecture](#model-architecture)
+  - [Paleographic Normalization](#paleographic-normalization)
+  - [Training Configuration](#training-configuration)
+- [Model Performance](#model-performance)
+- [Datasets and Models](#datasets-and-models)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
+- [Links](#links)
 
 ---
 
-## ⚙️ Installation & Usage
+## Project Goals
 
-### 1. Install dependencies
+1. **Fine-Tune a VLM for Historical OCR**  
+   Adapt `Qwen2.5-VL-7B-Instruct` for transcribing 17th-century Spanish manuscripts using parameter-efficient LoRA fine-tuning via Unsloth. The model captures both visual glyph-level features and contextual orthographic patterns unique to Early Modern Spanish printing.
 
-pip install -r requirements.txt
+2. **Outperform Conventional OCR Baselines**  
+   Substantially improve over Tesseract 4.1.1 on historical Spanish documents through paleographic normalization, data augmentation, and rigorous hyperparameter tuning — generalising across diverse typefaces, degradation levels, and scribal conventions present in corpus documents from 1628 to 1650.
 
-### 2. Train OCR Model
+---
 
-jupyter notebook step_1_model_training.ipynb
-
-### Run Evaluation
-
-jupyter notebook step_2_model_checking.ipynb
-
-### Evaluation Details
-Metrics Used:
-CER (Character Error Rate)
-Measures character-level transcription accuracy
-WER (Word Error Rate)
-Measures word-level correctness
-
-Evaluation is performed by comparing model outputs with ground truth transcriptions.
-
- 
- ###Benchmark Comparison
-Baseline: Tesseract OCR
-Proposed: Transformer OCR + LLM/VLM correction
-
-The proposed pipeline consistently outperforms the baseline across all tested samples.
-
-<img width="1470" height="620" alt="image" src="https://github.com/user-attachments/assets/fda57ed9-3a4c-497e-9ead-7e5bbaea5253" />
+## Pipeline Overview
